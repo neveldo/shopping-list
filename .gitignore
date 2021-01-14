@@ -16,3 +16,4 @@
 ###< symfony/phpunit-bridge ###
 
 /readme.local.md
+.idea
