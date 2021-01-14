@@ -1,0 +1,53 @@
+version: '3.7'
+
+networks:
+  shoppinglist-network:
+    driver: bridge
+
+volumes:
+  shoppinglist-db: {}
+
+services:
+  shoppinglist-php-cli:
+    build:
+      context: ./php-cli
+      args:
+        DOCKER_HOST_IP: ${DOCKER_HOST_IP}
+        XDEBUG_IDE_KEY: ${XDEBUG_IDE_KEY}
+    tty: true
+    volumes:
+      - ../:/var/www/shopping-list
+    networks:
+      - shoppinglist-network
+
+  shoppinglist-php-fpm:
+    build:
+      context: ./php-fpm
+      args:
+        DOCKER_HOST_IP: ${DOCKER_HOST_IP}
+        XDEBUG_IDE_KEY: ${XDEBUG_IDE_KEY}
+    volumes:
+      - ../:/var/www/shopping-list
+    networks:
+      - shoppinglist-network
+
+  shoppinglist-nginx:
+    build:
+      context: ./nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ../:/var/www/shopping-list
+    networks:
+      - shoppinglist-network
+
+  shoppinglist-postgres:
+    build:
+      context: ./postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - shoppinglist-db:/var/lib/postgresql/data
+    networks:
+      - shoppinglist-network
