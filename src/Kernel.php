@@ -22,12 +22,15 @@ class Kernel extends BaseKernel
         } elseif (is_file($path = \dirname(__DIR__).'/config/services.php')) {
             (require $path)($container->withPath($path), $this);
         }
+
+        $container->import('../config/services/*.php');
     }
 
     protected function configureRoutes(RoutingConfigurator $routes): void
     {
         $routes->import('../config/{routes}/'.$this->environment.'/*.yaml');
         $routes->import('../config/{routes}/*.yaml');
+        $routes->import('../config/{routes}/*.php');
 
         if (is_file(\dirname(__DIR__).'/config/routes.yaml')) {
             $routes->import('../config/routes.yaml');

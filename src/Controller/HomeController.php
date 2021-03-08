@@ -13,19 +13,23 @@ use Twig\Error\SyntaxError;
 
 final class HomeController
 {
+    public function __construct(
+        private Environment $templating
+    ) {
+    }
+
     /**
-     * @param Environment $templating
      * @return Response
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
      */
     #[Route('/', name: 'index')]
-    public function index(Environment $templating): Response
+    public function index(): Response
     {
         $response = new Response();
         $response->setContent(
-            $templating->render('Home/home.html.twig')
+            $this->templating->render('Home/home.html.twig')
         );
 
         return $response;
